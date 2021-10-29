@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .title{
+            color: lightcoral;
+            text-align: center;
+        }
+        .circle{
+            position: absolute;
+            border-radius: 200px;
+            background-color: red;
+            border-style: solid;
+            height: 100px;
+            width: 100px;
+            left: 0%;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">moveLeft Animation</h1>
+    <div class="content">
+        <div class="circle"></div>
+    </div>
+    <script>
+        let displacement = moveLeft();
+        setInterval(displacement, 10);
+        function moveLeft(){
+            let box = document.querySelector('.circle');
+            let initialX = 50;
+            function move(){
+                box.style.left = `${initialX}%`;
+                initialX = initialX - 0.1;
+                if (initialX <= 0){
+                    initialX = 100;
+                }
+            }
+            return move;
+        }
+    </script>
+</body>
+</html>
