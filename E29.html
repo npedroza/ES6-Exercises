@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+    div{
+        visibility: hidden;
+        background-color: #ccc;
+    }
+    #id1{
+        color: black;
+        text-decoration: underline;
+    }
+
+    #id1:hover{
+        cursor: pointer;
+        color:blue;
+    }
+
+    </style>
+</head>
+<body>
+    <div>Some text goes here</div>
+    <a id='id1'>Show</a>
+    <script >
+        let id1 = document.getElementById('id1');
+        let div = document.querySelector('div');
+        id1.addEventListener('click', show);
+        function show(){
+            if (div.style.visibility === 'hidden'){
+                div.style.visibility = 'visible';
+                id1.textContent = 'Hide';
+            }else{
+                div.style.visibility = 'hidden';
+                id1.textContent = 'Show';
+            }
+        }
+    </script>
+</body>
+</html>

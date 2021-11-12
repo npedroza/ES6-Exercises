@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        p:nth-of-type(odd){
+            cursor: pointer;
+        }
+        p:nth-of-type(even) {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <p>Toggle 1</p>
+    <p>I will be hidden or visible 1</p>
+
+    <p>Toggle 2</p>
+    <p>I will be hidden or visible 2</p>
+
+    <p>Toggle 3</p>
+    <p>I will be hidden or visible 3</p>
+
+    <p>Toggle 4</p>
+    <p>I will be hidden or visible 4</p>
+    <script >
+        let p = document.getElementsByTagName('p');
+        for (let i=0; i< p.length; i = i+2){
+            p[i].addEventListener('click', ()=>{show(i); });
+        }
+        function show(i){
+            if (p[i+1].style.visibility === 'hidden' || p[i+1].style.visibility === ''){
+                p[i+1].style.visibility = 'visible';
+            }
+            else{
+                p[i+1].style.visibility = 'hidden';
+            }
+        }
+    </script>
+</body>
+</html>

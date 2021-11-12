@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style></style>
+</head>
+<body>
+    <div>
+        <input type="text" id="word" placeholder="Find in the text...">
+    </div>
+    <div>
+        <p class='content'>
+            I hear America singing, the varied carols I hear,
+            Those of mechanics, each one singing his as it should be blithe and strong,
+            The carpenter singing his as he measures his plank or beam,
+            The mason singing his as he makes ready for work, or leaves off work,
+            The boatman singing what belongs to him in his boat, the deckhand singing on the steamboat deck,
+            The shoemaker singing as he sits on his bench, the hatter singing as he stands,
+            The wood-cutters song, the ploughboys on his way in the morning, or at noon intermission or at sundown,
+            The delicious singing of the mother, or of the young wife at work, or of the girl sewing or washing,
+            Each singing what belongs to him or her and to none else,
+            The day what belongs to the day at night the party of young fellows, robust, friendly,
+            Singing with open mouths their strong melodious songs. Walt Whitman
+        </p>
+    </div>
+    <script >
+        let pattern = document.getElementById('word');
+        let text = document.querySelector('.content');
+        let originalText = text.textContent;
+        pattern.addEventListener('keyup',lookForMatch)
+        function lookForMatch(){
+            let word = pattern.value;
+            if (!word){
+                text.innerHTML = originalText;
+                return;
+            }
+            if (word ==='*'){
+                let newText = `${originalText}`;
+                text.innerHTML = newText;
+                return
+            }
+            
+            let letters = [word];
+            let wildCard = getIdxs(word, '*');
+            let wordCombinations;
+            for (let i of wildCard){
+                for (let letter of letters){
+                    wordCombinations = [];
+                    for (let l=32; l<=126; l++){
+                        let newWord = `${letter.substring(0, i)}${String.fromCharCode(l)}${letter.substring(i + 1)}`;
+                        if (originalText.includes(newWord.substring(0,i+1)) && !letters.includes(newWord)){
+                            wordCombinations.push(newWord);
+                        }
+                    }
+                    letters = letters.concat(wordCombinations);
+                }
+            }
+            letters = letters.filter(word=> originalText.includes(word));
+            function findWord(lett){
+                text.textContent = originalText;
+                for (let l of lett){
+                    let newText = text.innerHTML;
+                    newText = newText.replaceAll(l, `<u><b>${l}</u></b>`);
+                    text.innerHTML = newText;
+                }
+            }
+            findWord(letters);
+
+            function getIdxs(str, word) {
+                let idx = [];
+                if (word===''){
+                    return idx
+                }
+                let i = -1;
+                while ((i = str.indexOf(word, i+1)) != -1){
+                    idx.push(i);
+                }
+                return idx;
+            }
+        }
+        lookForMatch();
+    </script>
+</body>
+</html>
