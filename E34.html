@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .container{
+            display: flex;
+            margin: 120px;
+            padding: 120px;
+        }
+        .ball{
+            position: relative;
+            width: 100px;
+            height: 100px;
+            background:purple;
+            border-radius: 100px;
+            margin: 100 px;
+        }
+        .height{
+            position: relative;
+            margin: 0;
+            padding: 30px
+        }
+        .btnBounce {
+            background-color: blue;
+            border: solid;
+            border-color: black;
+            color: white;
+            padding: 15px 50px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="ball">
+            <p class="height">10.0 m</p>
+        </div>
+    </div>
+    <button class='btnBounce'>Start the fall</button>
+    <script >
+        let button = document.querySelector('.btnBounce');
+        let text = document.querySelector('.height');
+
+        let g = -9.8, y = 0;
+        button.addEventListener('click', bouncing);
+        function bouncing(){
+            let v0 = 0,
+            s0 = 10,
+            t = 0,
+            H = 9;
+            y = 0;
+            let step = setInterval(falling, 50);
+            let ball = document.querySelector('.ball');
+            function falling(){
+                y = pos(t,v0,s0);
+                if (y<=0){
+                    t = 0;
+                    v0 =  Math.sqrt(-2*H*g);
+                    s0 = 0;
+                    H--;
+                    y=0;
+                    if (H < 0){
+                        clearInterval(step);
+                        button.style.display = 'block';
+                    }  
+                }
+                ball.style.top = 100-10*y + 'px'
+                text.textContent = `${String(y).substring(0,3)} m`
+                t++;
+            }
+            function pos(t,v0,s0){
+                return (g*(t**2))/2 + v0*t + s0;
+            }
+        }
+    </script>
+</body>
+</html>

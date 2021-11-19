@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .container{
+            display: flex;
+            margin: 120px;
+            padding: 120px;
+        }
+
+
+        tr:first-child{
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <table>
+            <tr>
+                <td>Name</td>
+                <td>Age</td>
+            </tr>
+            <tr>
+                <td>Sam</td>
+                <td>30</td>
+            </tr>
+            <tr>
+                <td>John</td>
+                <td>34</td>
+            </tr>
+            <tr>
+                <td>Tim</td>
+                <td>28</td>
+            </tr>
+        </table>
+    </div>
+    <script >
+        let table = document.querySelector('table');
+        let r = document.querySelectorAll('tr');
+        let header = r[0];
+        let personName = header.querySelector('td')
+        let personAge = header.querySelectorAll('td')[1];
+        personAge.addEventListener('click', sorting); 
+        personName.addEventListener('click',sorting);
+        
+        function sorting(){
+            let trNodes = [].slice.call(r, 1); 
+            for (let i = 1;  i < 4; i++){
+                r[i].remove();
+            }
+            switch (event.target.textContent){
+                case 'Age':
+                trNodes.sort(byAge);
+                function byAge(a,b){
+                    let a1 = a.querySelectorAll('td')[1].textContent;
+                    let a2 = b.querySelectorAll('td')[1].textContent;
+                    let sortA = parseInt(a1);
+                    let sortB = parseInt(a2);
+                    return sortA - sortB;
+                }
+                for (let n of trNodes){
+                    table.appendChild(n);
+                }
+                break;
+                case 'Name':
+                    trNodes.sort(byName);
+                    function byName(a,b){
+                        let n1 = a.querySelectorAll('td')[0].textContent;
+                        let n2 = b.querySelectorAll('td')[0].textContent;
+                        if (n1 > n2) return 1;
+                        if (n1 < n2) return -1;
+                        return 0;
+                    }
+                    for (let n of trNodes){
+                    table.appendChild(n);
+                }
+                break;
+            }
+
+        }
+    </script>
+</body>
+</html>

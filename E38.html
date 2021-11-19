@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+
+    </style>
+</head>
+<body>
+    <div class="content">
+        <table>
+            <tr>
+                <td><b>Quantities</b></td>
+                <td><b>Intial values</b></td>
+                <td><b>Final values</b></td>
+            </tr>
+            <tr>
+                <td>Position</td>
+                <td><input placeholder="default = 0 m " class="pos" ></td>
+                <td class="posFinal"></td>
+            </tr>
+            <tr>
+                <td>Velocity</td>
+                <td><input placeholder="default = 0 m/s" class="vel" ></td>
+                <td class="velFinal"></td>
+            </tr>
+            <tr>
+                <td>Acceleration</td>
+                <td><input placeholder="default = 0  m/s^2" class="acel" ></td>
+                <td class="acelFinal"></td>
+            </tr>
+            <tr>
+                <td>Time</td>
+                <td><input placeholder="default = 0 s" class="time" ></td>
+            </tr>
+        </table>
+        <div class='buttons'>
+            <button class='posBtn'> Calculate Position</button>
+            <button class='velBtn'> Calculate Velocity</button>
+            <button class='acelBtn'> Calculate Acceleration</button>
+        </div>
+
+    </div>
+    <script >
+        class UAM{
+            constructor(pos = 0,velocity = 0,acceleration = 0,time = 0){
+                this.position = pos;
+                this.velocity = velocity;
+                this.acel = acceleration;
+                this.time = time;
+            }
+            pos(){
+                return this.position + this.velocity*this.time + 0.5*this.acel*this.time*this.time;
+            }
+
+            vel(){
+                return this.velocity + this.acel*this.time;
+            }
+
+            acele(){
+                return this.velocity + this.acel*this.time - this.velocity;
+            }
+        }
+        let values = document.getElementsByTagName('input')
+        let quantities = []
+        for (let i of values){
+            quantities.push(parseFloat(i.value))
+        }
+        let motion = new UAM(...quantities)
+        var buttons = document.querySelector(".buttons");
+        buttons.addEventListener('click', fn)
+        function fn(event){
+            let clicked = event.target;
+            let action = clicked.className;
+            let values = document.getElementsByTagName('input')
+            let quantities = [];
+            for (let i of values){
+                if (i.value == '') i.value = 0.0;
+                quantities.push(parseFloat(i.value))
+            }
+            let motion = new UAM(...quantities)
+            let printValue = ''
+            let p;
+            switch (action){
+                case 'posBtn':
+                    printValue = motion.pos();
+                    p = document.getElementsByClassName('posFinal')[0]
+                    p.textContent = printValue + ' m';
+                break;
+                case 'velBtn':
+                    printValue = motion.vel();
+                    p = document.getElementsByClassName('velFinal')[0]
+                    p.textContent = printValue + ' m/s';
+                break;
+                case 'acelBtn':
+                    printValue = motion.acele();
+                    p = document.getElementsByClassName('acelFinal')[0]
+                    p.textContent = printValue + ' m/s^2';
+                break;
+            }
+    }
+    </script>
+</body>
+</html>
