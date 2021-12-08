@@ -8,8 +8,7 @@ function add(...numbers){
 }
 // alternative way using reduce
 function add2(...numbers){
-  if(numbers.length == 0) return 0
-  return numbers.reduce((a,b) => a+b);
+  return numbers.reduce((a,b) => a+b, 0);
 }
 
 add(2,3,3,10)//18
