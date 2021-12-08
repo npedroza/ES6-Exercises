@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
     div{
-        visibility: hidden;
         background-color: #ccc;
     }
     #id1{
@@ -22,18 +21,19 @@
     </style>
 </head>
 <body>
-    <div>Some text goes here</div>
+    <div style="display:none">Some text goes here</div>
     <a id='id1'>Show</a>
     <script >
         let id1 = document.getElementById('id1');
-        let div = document.querySelector('div');
         id1.addEventListener('click', show);
+        let div = document.querySelector('div');
         function show(){
-            if (div.style.visibility === 'hidden'){
-                div.style.visibility = 'visible';
+            console.log(div.style.display)
+            if (div.style.display === 'none'){
+                div.style.display = 'block';
                 id1.textContent = 'Hide';
-            }else{
-                div.style.visibility = 'hidden';
+            } else {
+                div.style.display = 'none';
                 id1.textContent = 'Show';
             }
         }
