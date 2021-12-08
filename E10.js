@@ -10,7 +10,7 @@ class Person{
 
     getData(url){
       fetch(url,{
-        method: 'POST',
+        method: 'GET',
         body: JSON.stringify(this.firstName + this.lastName),
         headers: {
           'Content-Type' : 'application/json'
