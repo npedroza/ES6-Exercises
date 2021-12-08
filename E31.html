@@ -28,14 +28,19 @@
     <script >
 
         let p = document.getElementsByTagName('p');
-        for (let i=0; i< p.length; i = i+2){
-            p[i].addEventListener('click', ()=>{show(i); });
+        let wasClicked = []
+        for (let i=0; i < p.length; i = i+2){
+            p[i].addEventListener('click', () => { show(i) });
         }
         function show(clicked){
-            for(let i = 1; i < p.length; i = i+2){
-                p[i].style.visibility = 'hidden';
-            }
-            p[clicked+1].style.visibility = 'visible';
+            if (p[clicked+1].style.visibility == 'visible'){
+                p[clicked+1].style.visibility = 'hidden'
+            } else {
+                for(let i = 1; i < p.length; i = i+2){
+                    p[i].style.visibility = 'hidden';
+                }
+                p[clicked+1].style.visibility = 'visible'; 
+            }   
         }
     </script>
 </body>
