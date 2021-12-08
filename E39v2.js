@@ -1,3 +1,15 @@
+let dictionary = { 
+  1:'1234567890',
+  2:'qwertyuiop',
+  3: 'asdfghjkl',
+  4: 'zxcvbnm',
+  5: '0987654321',
+  6: 'poiuytrewq',
+  7: 'lkjhgfdsa',
+  8: 'mnbvcxz'
+};
+
+
 function validate(originalStr){
     if (originalStr.length < 4) {
       return 'Valid string';
