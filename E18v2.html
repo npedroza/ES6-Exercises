@@ -81,6 +81,29 @@
         <input type="button" value="Delete candidate" id='delBtn'>
     </div>
     <script >
+
+        window.onload = function() {
+        document.getElementById("name").focus();
+        };
+    var allData = {
+        1: {
+            name: {
+                firstname: 'John',
+                lastname: 'Galt',
+                phone: '123-456-7890'
+            }
+        }
+    };
+
+    fetch('/').then((res, error) => {
+        if(res.ok) { 
+            fillInTable(allData)
+
+        } else if(error){
+            throw ("Could not load the info" + error.message)
+        }
+
+    });
     let addButton = document.getElementById('addBtn');
     let table = document.querySelector('.candidates');
     let nameCont = document.getElementById('name');
@@ -90,21 +113,10 @@
     let modifyArea = document.querySelector('.edit');
     let changeButton = document.getElementById('editBtn');
     let delBtn = document.getElementById('delBtn');
+    let counter = 1
 
-    var allData = {
-        1:{name: {
-            firstname: 'John',
-            lastname: 'Galt',
-            phone: '123-456-7890'
-                }
-            }
-    };
-
-    fetch('#').then(fillInTable(allData));
-
-
-    addButton.addEventListener('click', addUser);
     table.addEventListener('click',tableClicked);
+    addButton.addEventListener('click', addUser);
 
     function tableClicked(event){
         let clicked = event.target;
@@ -116,75 +128,88 @@
         table.style.display = 'none';
         modifyArea.style.display = 'block';
         changeButton.addEventListener('click', saveChanges, {'once':true})
-        delBtn.addEventListener('click', delUser, {'once':true})
-        fetch('#').then(putData(user_id));
+        delBtn.addEventListener('click', () => {
+            modifyName = ''
+            modifyLastName = ''
+            modifyPhone = ''
+            saveChanges()
+        })
+        fetch('/').then((res, error) => {
+            if(res.ok){
+                putData(user_id)
+            } else if (error) {
+                throw ("Could not load data " + error.message)
+            } 
 
-        function delUser(){
-            modifyName.value = '';
-            modifyLastName.value = '';
-            modifyPhone.value = '';
-            fetch('#',{method:"DELETE"}).then(()=> {delete allData[user_id];
-                                                        fillInTable(allData)});
-            inputArea.style.display = 'block';
-            table.style.display = 'inline-block';
-            modifyArea.style.display = 'none';
-        }
-
+        });
         function saveChanges(){
+            user_id = clicked.getAttribute('id');
             let newName = modifyName.value;
             let newLastName = modifyLastName.value;
             let newPhone = modifyPhone.value;
-            let newCandidate = {name:{
-                firstname:newName,
-                lastname: newLastName,
-                phone: newPhone
-                }}
-            fetch('#', {
-                method: 'POST',
-                body: newCandidate })
-                    .then(()=>{
-                        allData[user_id] = newCandidate;
-                        fillInTable(allData);
-                    })
+            if (!newName && !newLastName && !newPhone){
+                fetch('/',{method:"DELETE"}).then( ()=> {
+                    delete allData[user_id];                                    
+                    fillInTable(allData)
+                });
+            }else{
+                let newCandidate = {name:{
+                    firstname:newName,
+                    lastname: newLastName,
+                    phone: newPhone
+                    }}
+                fetch('/', {
+                    method: 'POST',
+                    body: newCandidate })
+                        .then(()=>{
+                            allData[user_id] = newCandidate;
+                            fillInTable(allData);
+                        })
+            }
             inputArea.style.display = 'block';
             table.style.display = 'inline-block';
             modifyArea.style.display = 'none';
-        }
-
-        function putData(user_id){
-            modifyName.value = allData[user_id].name.firstname;
-            modifyLastName.value = allData[user_id].name.lastname;
-            modifyPhone.value = allData[user_id].name.phone;
-        }
     }
+
+    function putData(user_id){
+        modifyName.value = allData[user_id].name.firstname;
+        modifyLastName.value = allData[user_id].name.lastname;
+        modifyPhone.value = allData[user_id].name.phone;
+    }
+}
+
     function addUser(){
+        counter++
         let textName = nameCont.value;
         let textLastName = lastNameCont.value;
         let textPhone = phoneCont.value;
 
         if (textName && textLastName && textPhone){
-            let sendData = {name:
-                                {
-                                    firstname:textName,
-                                    lastname:textLastName,
-                                    phone:textPhone
-                                }
-                            };
-            fetch('#', {
+            let sendData = {
+                name: {
+                    firstname:textName,
+                    lastname:textLastName,
+                    phone:textPhone
+                }
+            };
+            fetch('/', {
                     method: 'POST',
                     body: sendData })
-                        .then(response => {  let strIndices = Object.keys(allData);
-                                                let intIndices = strIndices.map(i=>parseInt(i));
-                                                let nextIndex = Math.max(intIndices) +1;
-                                                let strNextInd = String(nextIndex);
-                                                allData[strNextInd] = sendData;
-                                                fillInTable(allData);
-                                                })
+                        .then(() => {  
+                                let strIndices = Object.keys(allData);
+                                let intIndices = strIndices.map(i=>parseInt(i));
+                                let nextIndex = Math.max(intIndices) + 1;
+                                nextIndex = counter
+                                let strNextInd = String(nextIndex);
+                                allData[strNextInd] = sendData;
+                                fillInTable(allData);
+                                })
         
             nameCont.value = '';
             lastNameCont.value = '';
             phoneCont.value = '';
         }
+        document.getElementById("name").focus();
     }
 
 
