@@ -20,7 +20,7 @@
                     for (let i in urlArray){
                         callbackArray.push(function(){
                             return fetch(urlArray[i]).then(data => data.json()).catch((e) => {
-                                console.log('Failed to fetch' + urlArray[i])
+                                throw ("Failed to fetch" + urlArray[i])
                             });
                         }());
                     }
@@ -30,23 +30,19 @@
                                                 cbResponse[parseInt(i)+1] = response[i];
                                             }
                                             callback(cbResponse)}).catch((e) => {
-                                                console.log(e)
+                                                throw (e)
                                             });
                     } 
             };
         async.getAll([url1,url2], cb);
-        function cb(responses, error){
-            if (!error){
-
+        function cb(responses){
+            if (responses){
                 for (let i in responses){
                     let p = document.createElement('p');
                     p.innerHTML = JSON.stringify(responses[i])
                     callbackOutput.appendChild(p);
                 }
-            } else { 
-                throw ("An error ocurred")
             }
-
         }
     </script>
 </body>
