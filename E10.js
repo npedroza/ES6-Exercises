@@ -30,5 +30,6 @@ class Medic extends Person{
 }
 
 let Nain = new Medic("Nain", "Pedroza", "Professor");
-Nain.getFullName()
-Nain.getData('https://www.google.com');
+let data = Nain.getFullName()
+link = 'https://www.google.com/find?name=' + data
+Nain.getData(link);
