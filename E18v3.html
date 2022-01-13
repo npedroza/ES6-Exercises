@@ -51,7 +51,9 @@
         .edit{
             display: none;
         }
-
+        h2 {
+            color: red;
+        }
         .candidates{
             display: inline-block;
         }
@@ -77,8 +79,8 @@
         <input type="text" id='editLastName'><br>
         Phone:
         <input type="text" id='editPhone'> <br>
+        <h2>Left in blank the fields to delete the user!</h2>
         <input type="button" value="Save candidate information" id='editBtn'>
-        <input type="button" value="Delete candidate" id='delBtn'>
     </div>
     <script >
 
@@ -99,10 +101,9 @@
         if(res.ok) { 
             fillInTable(allData)
 
-        } else if(error){
+        } else if (error) {
             throw ("Could not load the info" + error.message)
         }
-
     });
     let addButton = document.getElementById('addBtn');
     let table = document.querySelector('.candidates');
@@ -128,13 +129,7 @@
         table.style.display = 'none';
         modifyArea.style.display = 'block';
         changeButton.addEventListener('click', saveChanges, {'once':true})
-        delBtn.addEventListener('click', () => {
-            modifyName = ''
-            modifyLastName = ''
-            modifyPhone = ''
-            saveChanges()
-        })
-        fetch('/').then((res, error) => {
+        fetch('/').then( (res, error) => {
             if(res.ok){
                 putData(user_id)
             } else if (error) {
@@ -142,7 +137,7 @@
             } 
 
         });
-        function saveChanges(){
+        function saveChanges() {
             user_id = clicked.getAttribute('id');
             let newName = modifyName.value;
             let newLastName = modifyLastName.value;
@@ -152,12 +147,14 @@
                     delete allData[user_id];                                    
                     fillInTable(allData)
                 });
-            }else{
-                let newCandidate = {name:{
-                    firstname:newName,
-                    lastname: newLastName,
-                    phone: newPhone
-                    }}
+            } else {
+                let newCandidate = {
+                    name:{
+                        firstname: newName,
+                        lastname: newLastName,
+                        phone: newPhone
+                    }
+                }
                 fetch('/', {
                     method: 'POST',
                     body: newCandidate })
@@ -169,14 +166,14 @@
             inputArea.style.display = 'block';
             table.style.display = 'inline-block';
             modifyArea.style.display = 'none';
-    }
+        }
 
-    function putData(user_id){
-        modifyName.value = allData[user_id].name.firstname;
-        modifyLastName.value = allData[user_id].name.lastname;
-        modifyPhone.value = allData[user_id].name.phone;
+        function putData(user_id){
+            modifyName.value = allData[user_id].name.firstname;
+            modifyLastName.value = allData[user_id].name.lastname;
+            modifyPhone.value = allData[user_id].name.phone;
+        }
     }
-}
 
     function addUser(){
         counter++
