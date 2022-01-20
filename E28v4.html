@@ -10,17 +10,16 @@
     <div class="callback"></div>
     <script >
         let callbackOutput = document.querySelector('.callback');
-        let url1 = 'https://baconipsum.com/api/?type=all-meat',
+        let url1 = '123https://baconipsum.com/api/?type=all-meat',
             url2 = 'https://baconipsum.com/api/?type=all-meat';
 
-
         var async = {
-            getAll: function ( urlArray, callback){ 
+            getAll: function (urlArray, callback){ 
                     let callbackArray = [];
                     for (let i in urlArray){
                         callbackArray.push(function(){
                             return fetch(urlArray[i]).then(data => data.json()).catch((e) => {
-                                throw ("Failed to fetch" + urlArray[i])
+                                return ("Failed to fetch " + urlArray[i])
                             });
                         }());
                     }
