@@ -27,15 +27,16 @@
     <p>I will be hidden or visible 4</p>
     <script >
 
-        let p = document.getElementsByTagName('p');
-        for (let i=0; i < p.length; i = i+2){
-            p[i].addEventListener('click', () => { show(i) });
+        let pOdd = document.querySelectorAll('p:nth-of-type(odd)');
+        let pEven = document.querySelectorAll('p:nth-of-type(even)');
+        for (let i=0; i<pOdd.length; i++){
+            pOdd[i].addEventListener('click', () => { show(i) })
         }
         function show(clicked){
-            for (let i=0; i < p.length; i = i+2){
-                p[i+1].style.visibility = 'hidden'
+            for (let i=0; i < pEven.length; i++){
+                pEven[i].style.visibility = 'hidden'
             }
-            p[clicked+1].style.visibility = 'visible'
+            pEven[clicked].style.visibility = 'visible'
         }
     </script>
 </body>
