@@ -9,16 +9,14 @@ class Person{
     }
 
     getData(url){
+      url = encodeURI(url + 'find?name='+ this.getFullName());
       fetch(url,{
-        method: 'GET',
-        body: JSON.stringify(this.firstName + this.lastName),
-        headers: {
-          'Content-Type' : 'application/json'
-        }
-      })
-      .then(res => {
-        return res.json()
-      })
+          method: 'GET',
+          headers: {
+            'Content-Type' : 'application/json',
+            'Accept': 'application/json'
+          }
+      }).then((res) => res.json())
   }
 }
 
@@ -29,7 +27,5 @@ class Medic extends Person{
     }
 }
 
-let Nain = new Medic("Nain", "Pedroza", "Professor");
-let data = Nain.getFullName()
-link = 'https://www.google.com/find?name=' + data
-Nain.getData(link);
+let Nain = new Medic("Nain", "Pedroza", "Surgery");
+let final = Nain.getData("https://www.google.com")
