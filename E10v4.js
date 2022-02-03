@@ -9,7 +9,7 @@ class Person{
     }
 
     getData(url){
-      url = encodeURI(url + 'find?name='+ this.getFullName());
+      url = encodeURI(url + '/find?name='+ this.getFullName());
       fetch(url,{
           method: 'GET',
           headers: {
