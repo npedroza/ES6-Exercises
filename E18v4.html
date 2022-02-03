@@ -69,9 +69,6 @@
         <input type="text" id='phone'> <br>
         <input type="button" value="Add a new candidate" id='addBtn' class='button'>
     </div>
-
-    <table class='candidates' border="5">
-    </table>
     <div class="edit">
         Name:
         <input type="text" id='editName'> <br>
@@ -79,44 +76,58 @@
         <input type="text" id='editLastName'><br>
         Phone:
         <input type="text" id='editPhone'> <br>
-        <h2>Left in blank the fields to delete the user!</h2>
-        <input type="button" value="Save candidate information" id='editBtn'>
+        <!-- <h2>Left in blank the fields to delete the user!</h2> -->
     </div>
+    <div class="test"></div>
+    <div class=btnActions>
+        <!-- <input type="button" class='ed-button' value="Save candidate information" id='editBtn'>
+        <input type="button" class='del-button' value="Delete candidate" id='delBtn'> -->
+    </div>
+    <table class='candidates' border="5">
+    </table>
+
     <script >
 
         window.onload = function() {
-        document.getElementById("name").focus();
+            document.getElementById("name").focus();
         };
-    var allData = {
-        1: {
-            name: {
-                firstname: 'John',
-                lastname: 'Galt',
-                phone: '123-456-7890'
+        var allData = {
+            1: {
+                name: {
+                    firstname: 'John',
+                    lastname: 'Galt',
+                    phone: '123-456-7890'
+                }
             }
-        }
-    };
-
+        };
     fetch('/').then((res, error) => {
         if(res.ok) { 
             fillInTable(allData)
-
         } else if (error) {
             throw ("Could not load the info" + error.message)
         }
     });
-    let addButton = document.getElementById('addBtn');
+
     let table = document.querySelector('.candidates');
-    let nameCont = document.getElementById('name');
-    let lastNameCont = document.getElementById('last-name');
-    let phoneCont = document.getElementById('phone');
+    let nameBox = document.getElementById('name');
+    let lastNameBox = document.getElementById('last-name');
+    let phoneBox = document.getElementById('phone');
     let inputArea = document.querySelector('.inputData');
     let modifyArea = document.querySelector('.edit');
-    let changeButton = document.getElementById('editBtn');
-    let delBtn = document.getElementById('delBtn');
+    let actForm = document.querySelector('.btnActions')
+    let addButton = document.getElementById('addBtn');
+    actForm.style.display = 'none';
     let counter = 1
-
-    table.addEventListener('click',tableClicked);
+    let saveBtn = document.createElement('button');
+    let delBtn = document.createElement('button');
+    saveBtn.setAttribute('id','editBtn');
+    delBtn.setAttribute('id', 'delBtn')
+    saveBtn.innerHTML = 'Save candidate information';
+    delBtn.innerHTML = 'Remove candidate';
+    actForm.appendChild(saveBtn);
+    actForm.appendChild(delBtn)
+    actForm.style.display = 'none';
+    table.addEventListener('click',tableClicked, {'once':false});
     addButton.addEventListener('click', addUser);
 
     function tableClicked(event){
@@ -128,44 +139,42 @@
         inputArea.style.display = 'none';
         table.style.display = 'none';
         modifyArea.style.display = 'block';
-        changeButton.addEventListener('click', saveChanges, {'once':true})
+        actForm.style.display = 'block';
+        saveBtn.addEventListener('click', saveChanges)
+        delBtn.addEventListener('click', removeCandidate)
         fetch('/').then( (res, error) => {
             if(res.ok){
                 putData(user_id)
             } else if (error) {
                 throw ("Could not load data " + error.message)
             } 
+        })
 
-        });
         function saveChanges() {
-            user_id = clicked.getAttribute('id');
             let newName = modifyName.value;
             let newLastName = modifyLastName.value;
             let newPhone = modifyPhone.value;
-            if (!newName && !newLastName && !newPhone){
-                fetch('/',{method:"DELETE"}).then( ()=> {
-                    delete allData[user_id];                                    
-                    fillInTable(allData)
-                });
-            } else {
-                let newCandidate = {
-                    name:{
-                        firstname: newName,
-                        lastname: newLastName,
-                        phone: newPhone
-                    }
+            let newCandidate = {
+                name:{
+                    firstname: newName,
+                    lastname: newLastName,
+                    phone: newPhone
                 }
-                fetch('/', {
-                    method: 'POST',
-                    body: newCandidate })
-                        .then(()=>{
-                            allData[user_id] = newCandidate;
-                            fillInTable(allData);
-                        })
             }
+            fetch('/', {
+                method: 'POST',
+                body: newCandidate })
+                    .then(()=>{
+                        allData[user_id] = newCandidate;
+                        fillInTable(allData);
+                    })
             inputArea.style.display = 'block';
             table.style.display = 'inline-block';
             modifyArea.style.display = 'none';
+            actForm.style.display = 'none';
+            saveBtn.removeEventListener('click', saveChanges)
+            delBtn.removeEventListener('click', removeCandidate)
+
         }
 
         function putData(user_id){
@@ -173,14 +182,30 @@
             modifyLastName.value = allData[user_id].name.lastname;
             modifyPhone.value = allData[user_id].name.phone;
         }
+        function removeCandidate() {
+            clicked = event.target;
+            user_id = clicked.getAttribute('id');
+            fetch('/', { 
+                method: "DELETE" 
+            }).then(() => {
+                delete allData[user_id];                                    
+                fillInTable(allData)
+            });
+            inputArea.style.display = 'block';
+            table.style.display = 'inline-block';
+            modifyArea.style.display = 'none';
+            actForm.style.display = 'none';
+            saveBtn.removeEventListener('click', saveChanges)
+            delBtn.removeEventListener('click', removeCandidate)
+        }
+
     }
 
     function addUser(){
         counter++
-        let textName = nameCont.value;
-        let textLastName = lastNameCont.value;
-        let textPhone = phoneCont.value;
-
+        let textName = nameBox.value;
+        let textLastName = lastNameBox.value;
+        let textPhone = phoneBox.value;
         if (textName && textLastName && textPhone){
             let sendData = {
                 name: {
@@ -192,7 +217,7 @@
             fetch('/', {
                     method: 'POST',
                     body: sendData })
-                        .then(() => {  
+                        .then(() => {
                                 let strIndices = Object.keys(allData);
                                 let intIndices = strIndices.map(i=>parseInt(i));
                                 let nextIndex = Math.max(intIndices) + 1;
@@ -202,30 +227,27 @@
                                 fillInTable(allData);
                                 })
         
-            nameCont.value = '';
-            lastNameCont.value = '';
-            phoneCont.value = '';
+            nameBox.value = '';
+            lastNameBox.value = '';
+            phoneBox.value = '';
         }
-        document.getElementById("name").focus();
     }
-
-
     function fillInTable(data){
         table.innerHTML = '';
-        let titRaw = document.createElement('tr');
-        let titName = document.createElement('th');
-        let titLastN = document.createElement('th');
-        let titPhone = document.createElement('th');
-        let titAdd = document.createElement('th');
-        titName.innerHTML = 'Name';
-        titLastN.innerHTML = 'Last Name';
-        titPhone.innerHTML = 'Phone';
-        titAdd.innerHTML = '#Add';
-        titRaw.appendChild(titName);
-        titRaw.appendChild(titLastN);
-        titRaw.appendChild(titPhone);
-        titRaw.appendChild(titAdd);
-        table.appendChild(titRaw);
+        let cellRow = document.createElement('tr');
+        let cellName = document.createElement('th');
+        let cellLastN = document.createElement('th');
+        let cellPhone = document.createElement('th');
+        let cellAdd = document.createElement('th');
+        cellName.innerHTML = 'Name';
+        cellLastN.innerHTML = 'Last Name';
+        cellPhone.innerHTML = 'Phone';
+        cellAdd.innerHTML = '#Add';
+        cellRow.appendChild(cellName);
+        cellRow.appendChild(cellLastN);
+        cellRow.appendChild(cellPhone);
+        cellRow.appendChild(cellAdd);
+        table.appendChild(cellRow);
         for (let c in data){
             let r = document.createElement('tr');
             let name = document.createElement('td');
