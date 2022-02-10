@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style></style>
+</head>
+<body>
+    <div class="callback"></div>
+    <script >
+        let callbackOutput = document.querySelector('.callback');
+        let url1 = 'https://baconipsum.com/api/?type=all-meat',
+            url2 = 'https://baconipsum.com/api/?type=all-meat';
+
+        var async = {
+            getAll: function (urlArray, callback){
+                let callbackArray = [];
+                for (let i in urlArray){
+                    callbackArray.push(function(){
+                        return fetch(urlArray[i]).then(data => data.json()).catch((e) => {
+                            return ("Failed to fetch " + urlArray[i])
+                        });
+                    }());
+                }
+                Promise.all(callbackArray).then(response => {
+                        let cbResponse = {};
+                        for (let i in response){
+                            cbResponse[parseInt(i)+1] = response[i];
+                        }
+                        callback.call(cbResponse)
+                    }).catch((e) => {
+                        throw (e);
+                    });
+                }
+            };
+            function cb(){
+                for (let i in this){
+                    let p = document.createElement('p');
+                    p.innerHTML = `${i}: ${this[i]}`
+                    callbackOutput.appendChild(p);
+                }
+            }
+        async.getAll([url1,url2], cb);
+    </script>
+</body>
+</html>
