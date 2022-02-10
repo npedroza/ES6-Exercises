@@ -5,9 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        .inputData{
-            background-color: ccc;
-        }
         #name,#last-name,#phone{
             background-color: #ccc; 
             border: none;
@@ -76,12 +73,8 @@
         <input type="text" id='editLastName'><br>
         Phone:
         <input type="text" id='editPhone'> <br>
-        <!-- <h2>Left in blank the fields to delete the user!</h2> -->
     </div>
-    <div class="test"></div>
     <div class=btnActions>
-        <!-- <input type="button" class='ed-button' value="Save candidate information" id='editBtn'>
-        <input type="button" class='del-button' value="Delete candidate" id='delBtn'> -->
     </div>
     <table class='candidates' border="5">
     </table>
@@ -107,7 +100,7 @@
             throw ("Could not load the info" + error.message)
         }
     });
-
+    let counter = 1
     let table = document.querySelector('.candidates');
     let nameBox = document.getElementById('name');
     let lastNameBox = document.getElementById('last-name');
@@ -116,8 +109,6 @@
     let modifyArea = document.querySelector('.edit');
     let actForm = document.querySelector('.btnActions')
     let addButton = document.getElementById('addBtn');
-    actForm.style.display = 'none';
-    let counter = 1
     let saveBtn = document.createElement('button');
     let delBtn = document.createElement('button');
     saveBtn.setAttribute('id','editBtn');
@@ -127,7 +118,7 @@
     actForm.appendChild(saveBtn);
     actForm.appendChild(delBtn)
     actForm.style.display = 'none';
-    table.addEventListener('click',tableClicked, {'once':false});
+    table.addEventListener('click',tableClicked);
     addButton.addEventListener('click', addUser);
 
     function tableClicked(event){
@@ -149,7 +140,15 @@
                 throw ("Could not load data " + error.message)
             } 
         })
-
+        function showInputForm() { 
+            inputArea.style.display = 'block';
+            table.style.display = 'inline-block';
+            modifyArea.style.display = 'none';
+            actForm.style.display = 'none';
+            saveBtn.removeEventListener('click', saveChanges)
+            delBtn.removeEventListener('click', removeCandidate)
+        }
+        
         function saveChanges() {
             let newName = modifyName.value;
             let newLastName = modifyLastName.value;
@@ -168,13 +167,7 @@
                         allData[user_id] = newCandidate;
                         fillInTable(allData);
                     })
-            inputArea.style.display = 'block';
-            table.style.display = 'inline-block';
-            modifyArea.style.display = 'none';
-            actForm.style.display = 'none';
-            saveBtn.removeEventListener('click', saveChanges)
-            delBtn.removeEventListener('click', removeCandidate)
-
+            showInputForm()
         }
 
         function putData(user_id){
@@ -182,23 +175,16 @@
             modifyLastName.value = allData[user_id].name.lastname;
             modifyPhone.value = allData[user_id].name.phone;
         }
+
         function removeCandidate() {
-            clicked = event.target;
-            user_id = clicked.getAttribute('id');
             fetch('/', { 
                 method: "DELETE" 
             }).then(() => {
                 delete allData[user_id];                                    
                 fillInTable(allData)
             });
-            inputArea.style.display = 'block';
-            table.style.display = 'inline-block';
-            modifyArea.style.display = 'none';
-            actForm.style.display = 'none';
-            saveBtn.removeEventListener('click', saveChanges)
-            delBtn.removeEventListener('click', removeCandidate)
+            showInputForm()
         }
-
     }
 
     function addUser(){
